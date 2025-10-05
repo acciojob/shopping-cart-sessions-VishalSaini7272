@@ -1,1 +1,40 @@
 /*  your css code here. If applicable */
+body {
+  font-family: Arial, sans-serif;
+  margin: 30px;
+}
+
+h1, h2 {
+  color: #333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 8px 0;
+  padding: 6px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+button {
+  margin-left: 10px;
+  padding: 4px 8px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#clear-cart-btn {
+  background-color: #d9534f;
+  margin-top: 15px;
+}
