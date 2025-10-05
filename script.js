@@ -1,4 +1,4 @@
-// Product data
+// Product Data
 const products = [
   { id: 1, name: "Product 1", price: 10 },
   { id: 2, name: "Product 2", price: 20 },
@@ -11,53 +11,44 @@ const productList = document.getElementById("product-list");
 const cartList = document.getElementById("cart-list");
 const clearCartBtn = document.getElementById("clear-cart-btn");
 
-// ✅ Initialize sessionStorage cart with two preloaded items
+// ✅ Step 1: Initialize sessionStorage with [P1, P5]
 function initializeCart() {
-  let cart = JSON.parse(sessionStorage.getItem("cart"));
-  if (!cart || !Array.isArray(cart)) {
-    cart = [
+  const existingCart = sessionStorage.getItem("cart");
+  if (!existingCart) {
+    const initialCart = [
       { id: 1, name: "Product 1", price: 10 },
       { id: 5, name: "Product 5", price: 50 },
     ];
-    sessionStorage.setItem("cart", JSON.stringify(cart));
+    sessionStorage.setItem("cart", JSON.stringify(initialCart));
   }
 }
 
-// ✅ Get cart
+// ✅ Step 2: Get and Save Cart
 function getCart() {
   return JSON.parse(sessionStorage.getItem("cart")) || [];
 }
 
-// ✅ Save cart
 function saveCart(cart) {
   sessionStorage.setItem("cart", JSON.stringify(cart));
 }
 
-// ✅ Render product list
+// ✅ Step 3: Render Product List (5 products)
 function renderProducts() {
-  productList.innerHTML = "";
-  products.forEach((product) => {
+  products.forEach((p) => {
     const li = document.createElement("li");
-    li.innerHTML = `
-      ${product.name} - $${product.price}
-      <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>
-    `;
+    const button = document.createElement("button");
+    button.textContent = "Add to Cart";
+    button.addEventListener("click", () => addToCart(p.id));
+    li.textContent = `${p.name} - $${p.price}`;
+    li.appendChild(button);
     productList.appendChild(li);
-  });
-
-  // Event listeners for add-to-cart buttons
-  document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = parseInt(btn.dataset.id);
-      addToCart(id);
-    });
   });
 }
 
-// ✅ Render cart items (keep it empty initially)
+// ✅ Step 4: Render Cart (empty UL but not null)
 function renderCart() {
-  const cart = getCart();
   cartList.innerHTML = "";
+  const cart = getCart();
   cart.forEach((item) => {
     const li = document.createElement("li");
     li.textContent = `${item.name} - $${item.price}`;
@@ -65,7 +56,7 @@ function renderCart() {
   });
 }
 
-// ✅ Add item to cart
+// ✅ Step 5: Add to Cart logic
 function addToCart(id) {
   const cart = getCart();
   const product = products.find((p) => p.id === id);
@@ -76,16 +67,13 @@ function addToCart(id) {
   }
 }
 
-// ✅ Clear cart
-function clearCart() {
+// ✅ Step 6: Clear Cart
+clearCartBtn.addEventListener("click", () => {
   sessionStorage.removeItem("cart");
   cartList.innerHTML = "";
-}
+});
 
-// Event Listeners
-clearCartBtn.addEventListener("click", clearCart);
-
-// Initialize and render
+// Initialize everything
 initializeCart();
 renderProducts();
 renderCart();
