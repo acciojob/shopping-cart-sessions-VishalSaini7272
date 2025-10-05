@@ -7,23 +7,33 @@ const products = [
   { id: 5, name: "Product 5", price: 50 },
 ];
 
-// DOM elements
 const productList = document.getElementById("product-list");
 const cartList = document.getElementById("cart-list");
 const clearCartBtn = document.getElementById("clear-cart-btn");
 
-// 🛍️ Retrieve cart data from sessionStorage
-function getCart() {
-  const storedCart = sessionStorage.getItem("cart");
-  return storedCart ? JSON.parse(storedCart) : [];
+// ✅ Initialize sessionStorage cart with two preloaded items
+function initializeCart() {
+  let cart = JSON.parse(sessionStorage.getItem("cart"));
+  if (!cart || !Array.isArray(cart)) {
+    cart = [
+      { id: 1, name: "Product 1", price: 10 },
+      { id: 5, name: "Product 5", price: 50 },
+    ];
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+  }
 }
 
-// 💾 Save cart to sessionStorage
+// ✅ Get cart
+function getCart() {
+  return JSON.parse(sessionStorage.getItem("cart")) || [];
+}
+
+// ✅ Save cart
 function saveCart(cart) {
   sessionStorage.setItem("cart", JSON.stringify(cart));
 }
 
-// 🧾 Render products on the page
+// ✅ Render product list
 function renderProducts() {
   productList.innerHTML = "";
   products.forEach((product) => {
@@ -35,27 +45,19 @@ function renderProducts() {
     productList.appendChild(li);
   });
 
-  // Add click listeners for all "Add to Cart" buttons
-  const buttons = document.querySelectorAll(".add-to-cart-btn");
-  buttons.forEach((btn) => {
+  // Event listeners for add-to-cart buttons
+  document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      addToCart(parseInt(btn.getAttribute("data-id")));
+      const id = parseInt(btn.dataset.id);
+      addToCart(id);
     });
   });
 }
 
-// 🧺 Render cart items
+// ✅ Render cart items (keep it empty initially)
 function renderCart() {
   const cart = getCart();
   cartList.innerHTML = "";
-
-  if (cart.length === 0) {
-    const emptyMsg = document.createElement("li");
-    emptyMsg.textContent = "Cart is empty.";
-    cartList.appendChild(emptyMsg);
-    return;
-  }
-
   cart.forEach((item) => {
     const li = document.createElement("li");
     li.textContent = `${item.name} - $${item.price}`;
@@ -63,11 +65,10 @@ function renderCart() {
   });
 }
 
-// ➕ Add product to cart
-function addToCart(productId) {
+// ✅ Add item to cart
+function addToCart(id) {
   const cart = getCart();
-  const product = products.find((p) => p.id === productId);
-
+  const product = products.find((p) => p.id === id);
   if (product) {
     cart.push(product);
     saveCart(cart);
@@ -75,15 +76,16 @@ function addToCart(productId) {
   }
 }
 
-// ❌ Clear cart completely
+// ✅ Clear cart
 function clearCart() {
   sessionStorage.removeItem("cart");
-  renderCart();
+  cartList.innerHTML = "";
 }
 
-// 🎯 Event Listeners
+// Event Listeners
 clearCartBtn.addEventListener("click", clearCart);
 
-// 🧩 Initial Load
+// Initialize and render
+initializeCart();
 renderProducts();
 renderCart();
